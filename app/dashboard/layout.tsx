@@ -9,8 +9,8 @@ import Sidebar from '@/components/Sidebar/Sidebar';
 export default function DashboardLayout({ children }: PropsWithChildren) {
   return (
     <>
-      <Sidebar />
-      <div className="sm:ml-64 bg-white rounded-md h-screen">
+      <div className="sm:ml-64 bg-white rounded-md h-full">
+        <Sidebar />
         <div className="p-4 rounded-lg ">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <Breadcrumb />
