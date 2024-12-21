@@ -5,6 +5,7 @@ import FileUpload from '@/components/Input/FileUploader';
 
 const UploadsPage: React.FC = () => {
   const handleFilesUploaded = (files: UploadedFile[]) => {
+    // eslint-disable-next-line no-console
     console.log('Files uploaded:', files);
   };
 

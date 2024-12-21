@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { Button, Select, Table, TextInput } from '@mantine/core';
 import Pagination from '@/components/Pagination/Pagination';
 import { User, usersData } from '@/utils/users';
+import UserModal from '../Modal/UserModal';
 
-const recordsPerPage = 10;
+const recordsPerPage = 5;
 
 const UserTable = () => {
   const [users, setUsers] = useState<User[]>(usersData);
@@ -13,7 +14,7 @@ const UserTable = () => {
   const [filterCity, setFilterCity] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-
+  const [modalOpened, setModalOpened] = useState(false);
   // Handle search
   const filteredUsers = users.filter((user) => {
     const searchTerm = search.toLowerCase();
@@ -65,9 +66,31 @@ const UserTable = () => {
     setUsers((prev) => prev.filter((user) => user.id !== id));
     setSelectedUsers((prev) => prev.filter((userId) => userId !== id)); // Remove from selected users if it's the last one selected
   };
+
+  const handleOpenModal = () => {
+    setModalOpened(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpened(false);
+  };
+
+  const handleFormSubmit = (data: Record<string, any>) => {
+    // Handle the submitted data
+    const newUser: User = {
+      id: users.length + 1,
+      name: data.name,
+      email: data.email,
+      companyName: data.companyName,
+      website: data.website,
+      city: data.city,
+    };
+    setUsers((prev) => [newUser, ...prev]);
+    handleCloseModal();
+  };
   return (
     <div className="space-y-4">
-      {/* Search, Filter, and Add New User Button in Inline Layout */}
+      {/* Search, Filter, and Add New User Button  */}
       <div className="flex items-center gap-4">
         <TextInput
           value={search}
@@ -85,16 +108,19 @@ const UserTable = () => {
           placeholder="Select City"
           style={{ width: '200px' }}
         />
-        <Button>Add New User</Button>
+        <Button type="button" onClick={handleOpenModal}>
+          Add New User
+        </Button>
         <Button color="red" onClick={handleDeleteSelected} disabled={selectedUsers.length === 0}>
           Delete Selected ({selectedUsers.length})
         </Button>
       </div>
-
+      {/* Modal component */}
+      <UserModal opened={modalOpened} onClose={handleCloseModal} onSubmit={handleFormSubmit} />
       {/* Table */}
       <Table.ScrollContainer minWidth={500}>
         <Table striped highlightOnHover withTableBorder>
-          <Table.Thead className="h-14">
+          <Table.Thead className="h-9">
             <Table.Tr>
               <Table.Th>
                 <input
@@ -102,7 +128,7 @@ const UserTable = () => {
                   checked={isAllSelected}
                   ref={(el) => {
                     if (el) {
-                      el.indeterminate = isSomeSelected; // Correct usage of the indeterminate property
+                      el.indeterminate = isSomeSelected;
                     }
                   }}
                   onChange={handleSelectAll}
@@ -117,7 +143,7 @@ const UserTable = () => {
             </Table.Tr>
           </Table.Thead>
 
-          <Table.Tbody className="h-[500px]">
+          <Table.Tbody className="h-[230px]">
             {cityFilteredUsers.length === 0 ? (
               <Table.Tr>
                 <Table.Td colSpan={7} className="text-center text-gray-500 py-10">
@@ -129,7 +155,7 @@ const UserTable = () => {
                 {paginatedUsers.map((user) => (
                   <Table.Tr
                     key={user.id}
-                    className="h-12 cursor-pointer"
+                    className="cursor-pointer  text-ellipsis "
                     onClick={() => handleRowSelection(user.id)}
                   >
                     <Table.Td>
@@ -150,7 +176,7 @@ const UserTable = () => {
                         color="red"
                         size="xs"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent row click from triggering checkbox selection
+                          e.stopPropagation();
                           handleRowDelete(user.id);
                         }}
                       >

@@ -11,7 +11,11 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1>Welcome to the Dashboard</h1>
+      <h2 className="text-2xl font-semibold">Welcome to your Dashboard!</h2>
+      <p className="text-lg mt-4">
+        This layout adapts to different screen sizes using Tailwind CSS.
+      </p>
+      <p className="text-lg mt-4">Resize the window to see the responsive design in action.</p>
       <p>
         You are logged in as <strong>{role}</strong>.
       </p>

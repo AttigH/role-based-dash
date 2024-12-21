@@ -1,81 +1,66 @@
-'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import IoMenuOutline from '@/icons/IoMenuOutline';
-import PrimaryButton from '../Button/PrimaryButton';
 
-export default function Example() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const sidebarRef = useRef<HTMLDivElement | null>(null);
+interface SidebarProps {
+  isSidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}
 
-  const toggleSidebar = (): void => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const handleClickOutside = (event: MouseEvent): void => {
-    if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-      setIsSidebarOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isSidebarOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSidebarOpen]);
-
-  useEffect(() => {
-    if (isSidebarOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isSidebarOpen]);
-
+const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setSidebarOpen }) => {
   return (
     <>
-      <PrimaryButton onClick={toggleSidebar} ariaControls="default-sidebar">
-        <IoMenuOutline className="w-6 h-6 text-primary" />
-      </PrimaryButton>
-
       <div
-        ref={sidebarRef}
-        id="default-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } sm:translate-x-0`}
-        aria-label="Sidebar"
+        className={`fixed z-20 inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-lg p-4 transform transition-transform duration-300 ease-in-out rounded-tr-2xl rounded-br-2xl
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static md:w-2/12`}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-          <ul className="space-y-2 font-medium">
-            <li>
-              <Link href="/dashboard" className="text-gray-900 hover:text-blue-600">
+        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+        <nav>
+          <ul>
+            <li className="mb-4">
+              <Link
+                href="/dashboard"
+                className="block px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-400 transition-colors duration-200"
+              >
                 Dashboard
               </Link>
             </li>
-            <li>
-              <Link href="/dashboard/users" className="text-gray-900 hover:text-blue-600">
-                Users
+            <li className="mb-4">
+              <Link
+                href="/dashboard/users"
+                className="block px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-400 transition-colors duration-200"
+              >
+                User Management
               </Link>
             </li>
-            <li>
-              <Link href="/dashboard/uploads" className="text-gray-900 hover:text-blue-600">
-                Uploads
+            <li className="mb-4">
+              <Link
+                href="/dashboard/uploads"
+                className="block px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-400 transition-colors duration-200"
+              >
+                Uploads Management
+              </Link>
+            </li>
+            <li className="mb-4">
+              <Link
+                href="/help"
+                className="block px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-400 transition-colors duration-200"
+              >
+                Help
               </Link>
             </li>
           </ul>
-        </div>
+        </nav>
       </div>
+
+      {/* Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-10 bg-black opacity-50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
     </>
   );
-}
+};
+
+export default Sidebar;
