@@ -139,7 +139,7 @@ const TableLayout: React.FC<TableLayoutProps> = ({
                               onEditUser(user);
                             }}
                           >
-                            <IoEditIcon width={25} height={25} color="blue" />
+                            <IoEditIcon width={25} height={25} color="gray" />
                           </button>
                         </div>
                       </Table.Td>
