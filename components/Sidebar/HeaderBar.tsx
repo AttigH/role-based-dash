@@ -23,7 +23,6 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
           />
         </svg>
       </button>
-      <h1 className="text-lg font-semibold">Dashboard</h1>
     </div>
   );
 };

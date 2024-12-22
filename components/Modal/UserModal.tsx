@@ -1,37 +1,67 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, TextInput } from '@mantine/core';
+import { showNotification } from '@/utils/notifications';
 import ModalWrapper from './ModalWrapper';
 
 interface UserModalProps {
   opened: boolean;
   onClose: () => void;
-  onSubmit: (data: Record<string, any>) => void;
+  onSubmit: (data: User) => void;
+  userToEdit?: User | null; // Add userToEdit prop for editing
 }
 
-const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit }) => {
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  company: {
+    name: string;
+  };
+  website: string;
+  address: {
+    city: string;
+  };
+}
+
+const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit, userToEdit }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    defaultValues: {
+  } = useForm<User>({
+    defaultValues: userToEdit || {
       name: '',
       email: '',
-      companyName: '',
+      company: { name: '' },
       website: '',
-      city: '',
+      address: { city: '' },
     },
   });
 
-  const handleFormSubmit = (data: Record<string, any>) => {
-    onSubmit(data);
-    reset();
-    onClose();
+  const handleFormSubmit = async (data: User) => {
+    try {
+      await onSubmit(data);
+      reset();
+      onClose();
+
+      // Success notification
+      showNotification({
+        type: 'success',
+        title: userToEdit ? 'User Updated' : 'User Added',
+        message: `The user was ${userToEdit ? 'updated' : 'added'} successfully.`,
+      });
+    } catch (error) {
+      // Error notification
+      showNotification({
+        type: 'error',
+        title: 'Error',
+        message: 'There was an error processing the user.',
+      });
+    }
   };
 
-  // Validation Rules Object
   const validationRules = {
     name: {
       required: 'Name is required',
@@ -51,6 +81,7 @@ const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit }) => {
       required: 'Company Name is required',
     },
     website: {
+      required: 'Website is required',
       pattern: {
         value: /^(https?:\/\/)?([\w\d-]+\.)+[\w\d-]+(\/.*)?$/,
         message: 'Enter a valid website URL',
@@ -60,12 +91,26 @@ const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit }) => {
       required: 'City is required',
     },
   };
-  // Helper function to safely display error messages
+
   const getErrorMessage = (error: any): string | undefined => {
-    return typeof error?.message === 'string' ? error.message : undefined;
+    return error?.message || undefined;
   };
+
+  // Reset form when modal is closed or userToEdit changes
+  useEffect(() => {
+    if (!opened) {
+      reset();
+    } else if (userToEdit) {
+      reset(userToEdit); // Set form values to userToEdit if editing
+    }
+  }, [opened, reset, userToEdit]);
+
   return (
-    <ModalWrapper opened={opened} onClose={onClose} title="Add New User">
+    <ModalWrapper
+      opened={opened}
+      onClose={onClose}
+      title={userToEdit ? 'Edit User' : 'Add New User'}
+    >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <Controller
           name="name"
@@ -96,14 +141,14 @@ const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit }) => {
         />
 
         <Controller
-          name="companyName"
+          name="company.name"
           control={control}
           rules={validationRules.companyName}
           render={({ field }) => (
             <TextInput
               label="Company Name"
               placeholder="Enter company name"
-              error={getErrorMessage(errors.companyName)}
+              error={getErrorMessage(errors.company?.name)}
               {...field}
             />
           )}
@@ -124,14 +169,14 @@ const UserModal: React.FC<UserModalProps> = ({ opened, onClose, onSubmit }) => {
         />
 
         <Controller
-          name="city"
+          name="address.city"
           control={control}
           rules={validationRules.city}
           render={({ field }) => (
             <TextInput
               label="City"
               placeholder="Enter city"
-              error={getErrorMessage(errors.city)}
+              error={getErrorMessage(errors.address?.city)}
               {...field}
             />
           )}

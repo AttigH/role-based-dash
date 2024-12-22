@@ -1,6 +1,8 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 import { IBM_Plex_Mono, Inter } from 'next/font/google';
+import { Notifications } from '@mantine/notifications';
 
 import './globals.css';
 
@@ -51,7 +53,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <RoleProvider>
-          <MantineProvider theme={theme}>{children}</MantineProvider>
+          <MantineProvider theme={theme}>
+            {' '}
+            <Notifications />
+            {children}
+          </MantineProvider>
         </RoleProvider>
       </body>
     </html>

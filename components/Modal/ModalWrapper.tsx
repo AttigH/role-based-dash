@@ -11,7 +11,16 @@ interface ReusableModalProps {
 
 const ModalWrapper: React.FC<ReusableModalProps> = ({ opened, onClose, title, children }) => {
   return (
-    <Modal opened={opened} onClose={onClose} title={title} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={title}
+      overlayProps={{
+        backgroundOpacity: 0.55,
+        blur: 3,
+      }}
+      centered
+    >
       {children}
     </Modal>
   );

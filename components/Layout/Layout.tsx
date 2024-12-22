@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Divider } from '@mantine/core';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
-import Header from '../Sidebar/HeaderBar';
+import MainHeader from '../Header/MainHeader';
 import Sidebar from '../Sidebar/Sidebar';
 
 interface LayoutProps {
@@ -8,7 +9,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
@@ -18,16 +19,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <Header setSidebarOpen={setSidebarOpen} />
 
-        <div className="p-6 flex-1 overflow-auto">
-          {/* Breadcrumb */}
-          <nav className="text-sm  bg-gradient-to-b from-blue-50 to-blue-100 text-white shadow-lg p-4 rounded-md">
+        <div className="flex-1 overflow-auto ">
+          <MainHeader setSidebarOpen={setSidebarOpen} />
+          <div className="block lg:hidden p-4">
             <Breadcrumb />
-          </nav>
+            <Divider my="sm" />
+          </div>
 
           {/* Main Content Area */}
-          <div className="">{children}</div>
+          <main>
+            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">{children}</div>
+          </main>
         </div>
       </div>
     </div>
