@@ -16,6 +16,9 @@ This is a role-based user management dashboard built with React NextJS framework
 
 ⚡ Notifications: Success and error notifications are shown on successful or failed operations.
 
+⚡ Breadcrumb: To see the current path
+
+
 ## 🚀 Mantine Table Features
 
 🔧 Table Actions : Delete / Edit
@@ -25,6 +28,13 @@ This is a role-based user management dashboard built with React NextJS framework
 🔧 You select a row by checking the checkbox or by selecting the row
 
 🔧 Responsive Table UI
+
+
+## 🚀 Uplpoad File Features
+
+🔧 You can upload PNG / JPG / GIF images
+
+🔧 Click on the image to open the image preview component
 
 
 ## 🌐 Roles and Permissions:
